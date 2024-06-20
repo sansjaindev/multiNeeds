@@ -55,19 +55,21 @@
         document.addEventListener('DOMContentLoaded', function () {
             const token = localStorage.getItem('token');
 
+            fetch('/api/auth/isLoggedIn', {
+                method: 'GET',
+                headers: { 'Authorization': `Bearer ${token}` }
+            }).then(response => response.json()).then(data => {
+                if (data.loggedIn) {
+                    document.getElementById('signupNav').style.display = 'none';
+                    // document.getElementById('adminLoginNav').style.display = 'none';
+                    document.getElementById('logoutNav').style.display = 'block';
+                }
+            }).catch(error => {
+                console.error('Error:', error);
+            });
+            
             if (token) {
-                fetch('/api/auth/isLoggedIn', {
-                    method: 'GET',
-                    headers: { 'Authorization': `Bearer ${token}` }
-                }).then(response => response.json()).then(data => {
-                    if (data.loggedIn) {
-                        document.getElementById('signupNav').style.display = 'none';
-                        // document.getElementById('adminLoginNav').style.display = 'none';
-                        document.getElementById('logoutNav').style.display = 'block';
-                    }
-                }).catch(error => {
-                    console.error('Error:', error);
-                });
+                window.location.href = '/';
             }
 
             const loginForm = document.getElementById('loginForm');

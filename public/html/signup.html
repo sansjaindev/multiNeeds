@@ -57,6 +57,10 @@
         document.addEventListener('DOMContentLoaded', () => {
             const token = localStorage.getItem('token');
 
+            if (token) {
+                window.location.href = '/';
+            }
+            
             const signupForm = document.getElementById('signupForm');
             signupForm.addEventListener('submit', async (event) => {
                 event.preventDefault();
