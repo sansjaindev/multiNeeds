@@ -83,9 +83,9 @@
             let imageString = '';
             productImage.addEventListener('change', () => {
                 const img = productImage.files[0];
-                if (img.size > 50 * 1024 * 1024) { // Limit image size to 5MB
+                if (img.size > 50 * 1024 * 1024) {
                     alert('Image size should be less than 5MB');
-                    productImage.value = ''; // Clear the file input
+                    productImage.value = '';
                     return;
                 }
                 const reader = new FileReader();
@@ -107,7 +107,6 @@
                 if (imageString) {
                     productData.imgString = imageString;
                 }
-
 
                 const response = await fetch('/api/products', {
                     method: 'POST',
