@@ -28,6 +28,14 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname + '/public/html/index.html'));
 });
 
+app.get('/api/search', (req, res) => {
+    res.sendFile(path.join(__dirname, '/public/html/index.html'));
+})
+
+app.get('/product/:id', (req, res) => {
+    res.sendFile(path.join(__dirname, '/public/html/product.html'));
+})
+
 app.get('/login', (req, res) => {
     res.sendFile(path.join(__dirname + '/public/html/login.html'));
 });

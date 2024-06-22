@@ -37,6 +37,16 @@ router.get('/products/:id', async (req, res) => {
     }
 });
 
+router.get('/searchItems', async (req, res) => {
+    const searchKeywords = req.query.q ? req.query.q.toLowerCase() : '';
+    try {
+        const products = await Product.find({ name: { $regex: searchKeywords } });
+        res.status(200).send(products);
+    } catch (err) {
+        res.status(400).send(err);
+    }
+})
+
 // Update a product by ID (Admin only)
 router.put('/products/:id', auth, admin, async (req, res) => {
     try {

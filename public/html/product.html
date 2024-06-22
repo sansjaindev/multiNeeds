@@ -92,7 +92,7 @@
                 searchForm.addEventListener('submit', (event) => {
                     event.preventDefault();
                     const query = document.getElementById('searchInput').value.toLowerCase();
-                    displayProducts(products.filter(product => product.name.toLowerCase().includes(query)));
+                    window.location.href = `/api/search?q=${query}`;
                 });
 
 
