@@ -92,7 +92,7 @@
                 searchForm.addEventListener('submit', (event) => {
                     event.preventDefault();
                     const query = document.getElementById('searchInput').value.toLowerCase();
-                    window.location.href = `/api/search?q=${query}`;
+                    window.location.href = `/search?q=${query}`;
                 });
 
 
@@ -100,7 +100,7 @@
 
 
                 const productId = window.location.pathname.split('/')[2];
-                await fetch(`/api/products/${productId}`).then(response => response.json()).then(product => {
+                await fetch(`/products/${productId}`).then(response => response.json()).then(product => {
                     document.getElementById('productImage').src = product.imgString;
                     document.getElementById('productName').textContent = product.name;
                     document.getElementById('productDescription').textContent = product.description;

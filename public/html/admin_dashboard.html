@@ -95,7 +95,7 @@
             });
     
             async function loadProducts() {
-                const response = await fetch('/api/products');
+                const response = await fetch('/products');
                 const products = await response.json();
                 displayProducts(products);
                 return products;
@@ -180,7 +180,7 @@
                     productData.imgString = imageString;
                 }
     
-                const response = await fetch('/api/products', {
+                const response = await fetch('/products', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -232,7 +232,7 @@
                             productData.imgString = imgInput.dataset.imageString;
                         }
     
-                        const response = await fetch(`/api/products/${id}`, {
+                        const response = await fetch(`/products/${id}`, {
                             method: 'PUT',
                             headers: {
                                 'Content-Type': 'application/json',
@@ -255,7 +255,7 @@
                     button.addEventListener('click', async (event) => {
                         const id = event.target.dataset.id;
     
-                        const response = await fetch(`/api/products/${id}`, {
+                        const response = await fetch(`/products/${id}`, {
                             method: 'DELETE',
                             headers: {
                                 'Authorization': `Bearer ${localStorage.getItem('token')}`

@@ -20,7 +20,7 @@ mongoose.connect('mongodb://localhost:27017/ecommerce', { useNewUrlParser: true,
     .catch(err => console.log(err));
 
 // Routes
-app.use('/api', productRoutes);
+app.use('/', productRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api', orderRoutes);
 
@@ -28,7 +28,7 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname + '/public/html/index.html'));
 });
 
-app.get('/api/search', (req, res) => {
+app.get('/search', (req, res) => {
     res.sendFile(path.join(__dirname, '/public/html/index.html'));
 })
 
