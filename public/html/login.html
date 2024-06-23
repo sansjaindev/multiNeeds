@@ -89,7 +89,7 @@
                     if (response.ok) {
                         localStorage.setItem('token', data.token);
                         alert('Logged in successfully');
-                        window.location.href = '/';
+                        window.location.href = localStorage.getItem('lastPage');
                     } else {
                         alert(data.message);
                     }

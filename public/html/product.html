@@ -65,6 +65,10 @@
             const token = localStorage.getItem('token');
             let isLoggedIn = false;
 
+            document.getElementById('loginNav').addEventListener('click', async () => {
+                localStorage.setItem('lastPage', window.location.href);
+            });
+
 
             fetch('/api/auth/isLoggedIn', {
                 method: 'GET',
@@ -145,6 +149,7 @@
                         alert(data.message);
                     }
                 } else {
+                    localStorage.setItem('lastPage', window.location.href);
                     window.location.href = '/login';
                 }
             });
