@@ -128,7 +128,7 @@
             // });
 
             // const searchForm = document.getElementById('searchForm');
-            
+
             const searchForm = document.getElementById('search');
             searchForm.addEventListener('submit', async (event) => {
                 event.preventDefault();
@@ -171,14 +171,30 @@
                 count++;
                 const div = document.createElement('div');
                 div.classList.add('col');
-                div.innerHTML = `<a href="/product/${product._id}" target="_blank"><div class="card h-100">
+
+                if (product.stock > 0) {
+                    div.innerHTML = `<a href="/product/${product._id}" target="_blank" style="text-decoration: none;"><div class="card h-100">
                                     <img src="${product.imgString}" class="card-img-top" alt="Product Image">
                                     <div class="card-body">
                                         <h5 class="card-title">${product.name}</h5>
-                                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                                        <a href="#" class="btn btn-primary">Go somewhere</a>
+                                        <p>${product.rating}</p>
+                                        <p class="card-text">Rs. ${product.price}</p>
+                                        <p class="card-text">${product.stock} left</p>
                                     </div>
                                  </div></a>`;
+                }
+
+                else {
+                    div.innerHTML = `<a href="/product/${product._id}" target="_blank" style="text-decoration: none;"><div class="card h-100">
+                                    <img src="${product.imgString}" class="card-img-top" alt="Product Image">
+                                    <div class="card-body">
+                                        <h5 class="card-title">${product.name}</h5>
+                                        <p>${product.rating}</p>
+                                        <p class="card-text">${product.price}.</p>
+                                        <p class="card-text">Out of stock</p>
+                                    </div>
+                                 </div></a>`;
+                }
                 productList.appendChild(div);
             });
 
