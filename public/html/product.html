@@ -53,60 +53,102 @@
     <div class="product-container">
         <img src="" alt="Product Image" class="product-image" id="productImage">
         <h1 class="product-name" id="productName"></h1>
+        <p class="product-price" id="productPrice"></p>
+        <p class="product-rating" id="productRating"></p>
         <p class="product-description" id="productDescription"></p>
+        <!-- <a href="#" class="order-button" id="orderButton" style="display: none;">Place Order</a> -->
         <a href="#" class="order-button" id="orderButton">Place Order</a>
     </div>
 
     <script>
-            document.addEventListener('DOMContentLoaded', async () => {
-                const token = localStorage.getItem('token');
+        document.addEventListener('DOMContentLoaded', async () => {
+            const token = localStorage.getItem('token');
+            let isLoggedIn = false;
 
-                if (token) {
-                    fetch('/api/auth/isLoggedIn', {
-                        method: 'GET',
-                        headers: { 'Authorization': `Bearer ${token}` }
-                    }).then(response => response.json()).then(data => {
-                        if (data.loggedIn) {
-                            document.getElementById('loginNav').style.display = 'none';
-                            document.getElementById('signupNav').style.display = 'none';
-                            document.getElementById('logoutNav').style.display = 'block';
-                            document.getElementById('order').style.display = 'block';
 
-                            if (data.role === 'admin') {
-                                document.getElementById('adminDashboardNav').style.display = 'block';
-                            }
-                        }
-                    }).catch(error => {
-                        console.error('Error:', error);
-                    });
+            fetch('/api/auth/isLoggedIn', {
+                method: 'GET',
+                headers: { 'Authorization': `Bearer ${token}` }
+            }).then(response => response.json()).then(data => {
+                if (data.loggedIn) {
+                    isLoggedIn = true;
+                    document.getElementById('loginNav').style.display = 'none';
+                    document.getElementById('signupNav').style.display = 'none';
+                    document.getElementById('logoutNav').style.display = 'block';
+                    // document.getElementById('orderButton').style.display = 'block';
+
+                    if (data.role === 'admin') {
+                        document.getElementById('adminDashboardNav').style.display = 'block';
+                    }
+
+
                 }
-
-                const logoutNav = document.getElementById('logoutNav');
-                logoutNav.addEventListener('click', () => {
-                    localStorage.removeItem('token');
-                    alert('Logged out Successfully.');
-                    window.location.reload();
-                });
-
-                const searchForm = document.getElementById('search');
-                searchForm.addEventListener('submit', (event) => {
-                    event.preventDefault();
-                    const query = document.getElementById('searchInput').value.toLowerCase();
-                    window.location.href = `/search?q=${query}`;
-                });
+            }).catch(error => {
+                console.error('Error:', error);
+            });
 
 
+            const logoutNav = document.getElementById('logoutNav');
+            logoutNav.addEventListener('click', () => {
+                localStorage.removeItem('token');
+                alert('Logged out Successfully.');
+                window.location.reload();
+            });
+
+            const searchForm = document.getElementById('search');
+            searchForm.addEventListener('submit', (event) => {
+                event.preventDefault();
+                const query = document.getElementById('searchInput').value.toLowerCase();
+                window.location.href = `/search?q=${query}`;
+            });
+
+
+            const productId = window.location.pathname.split('/')[2];
+            await fetch(`/products/${productId}`).then(response => response.json()).then(product => {
+                document.getElementById('productImage').src = product.imgString;
+                document.getElementById('productName').textContent = product.name;
+                document.getElementById('productPrice').textContent = 'Rs.' + product.price;
+                document.getElementById('productDescription').textContent = product.description;
+                document.title = `${product.name} - multiNeeds`;
+
+                if (product.rating === '') {
+                    document.getElementById('productRating').textContent = 'No rating yet. Be the first one to rate';
+                } else {
+                    document.getElementById('productRating').textContent = product.rating + ' stars rating';
+                }
+            }).catch(error => console.error('Error fetching product data:', error));
 
 
 
-                const productId = window.location.pathname.split('/')[2];
-                await fetch(`/products/${productId}`).then(response => response.json()).then(product => {
-                    document.getElementById('productImage').src = product.imgString;
-                    document.getElementById('productName').textContent = product.name;
-                    document.getElementById('productDescription').textContent = product.description;
-                    document.title = `${product.name} - multiNeeds`;
-                }).catch(error => console.error('Error fetching product data:', error));
-            })
+            const orderButton = document.getElementById('orderButton');
+            orderButton.addEventListener('click', async (event) => {
+                event.preventDefault();
+                if (isLoggedIn) {
+                    const order = {
+                        productId: productId,
+                        quantity: 1 // You can change the quantity or make it dynamic as needed
+                    };
+
+                    const response = await fetch('/api/orders', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify(order)
+                    })
+
+                    const data = await response.json();
+                    if (response.ok) {
+                        alert('Order placed successfully');
+                    } else {
+                        alert(data.message);
+                    }
+                } else {
+                    window.location.href = '/login';
+                }
+            });
+        })
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
