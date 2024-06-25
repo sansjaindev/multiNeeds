@@ -62,6 +62,10 @@
                 localStorage.setItem('lastPage', window.location.href);
             });
 
+            document.getElementById('signupNav').addEventListener('click', async () => {
+                localStorage.setItem('lastPage', window.location.href);
+            });
+
             if (token) {
                 fetch('/api/auth/isLoggedIn', {
                     method: 'GET',

@@ -68,6 +68,9 @@
             document.getElementById('loginNav').addEventListener('click', async () => {
                 localStorage.setItem('lastPage', window.location.href);
             });
+            document.getElementById('signupNav').addEventListener('click', async () => {
+                localStorage.setItem('lastPage', window.location.href);
+            });
 
 
             fetch('/api/auth/isLoggedIn', {

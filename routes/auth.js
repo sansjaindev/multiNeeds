@@ -23,7 +23,7 @@ const authMiddleware = (req, res, next) => {
 
 router.post('/signup', async (req, res) => {
     try {
-        const { username, password } = req.body;
+        const { name, username, password } = req.body;
 
         if (!username || !password) {
             return res.status(400).json({ message: 'Username and password are required' });
@@ -34,7 +34,7 @@ router.post('/signup', async (req, res) => {
             return res.status(400).json({ message: 'Username already exists' });
         }
 
-        const user = new User({ username, password });
+        const user = new User({ name, username, password });
         await user.save();
 
         res.status(201).json({ message: 'User created successfully' });
