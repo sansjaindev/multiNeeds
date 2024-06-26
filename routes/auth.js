@@ -1,6 +1,8 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const Order = require('../models/order');
+const Product = require('../models/Product');
 
 const router = express.Router();
 
@@ -78,6 +80,23 @@ router.post('/admin-login', async (req, res) => {
 
 router.get('/isLoggedIn', authMiddleware, (req, res) => {
     res.json({ loggedIn: true, role: req.userRole });
+});
+
+router.get('/profile', authMiddleware, async (req, res) => {
+    try {
+        const userId = req.userId
+        const user = await User.findById(userId).select('-password');
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+
+        const orders = await Order.find({ userId });
+
+        res.json({ success: true, user: { ...user.toObject(), orders } });
+    } catch (error) {
+        console.error('Error fetching user profile:', error);
+        res.status(500).json({ success: false, message: 'Internal server error' });
+    }
 });
 
 module.exports = router;
