@@ -58,6 +58,12 @@
         <p class="product-description" id="productDescription"></p>
         <!-- <a href="#" class="order-button" id="orderButton" style="display: none;">Place Order</a> -->
         <a href="#" class="order-button" id="orderButton">Place Order</a>
+        <div class="quantity-container" id="quantityContainer" style="display: none;">
+            <button id="decreaseQuantity" class="btn btn-danger">-</button>
+            <span id="quantity">1</span>
+            <button id="increaseQuantity" class="btn btn-success">+</button>
+            <button id="confirmOrder" class="btn btn-primary">Confirm Order</button>
+        </div>
     </div>
 
     <script>
@@ -127,13 +133,39 @@
 
 
 
-            const orderButton = document.getElementById('orderButton');
-            orderButton.addEventListener('click', async (event) => {
+            orderButton.addEventListener('click', (event) => {
+                event.preventDefault();
+                if (isLoggedIn) {
+                    quantityContainer.style.display = 'block';
+                } else {
+                    localStorage.setItem('lastPage', window.location.href);
+                    window.location.href = '/login';
+                }
+            });
+
+            let quantity = 1;
+            const quantitySpan = document.getElementById('quantity')
+
+            document.getElementById('decreaseQuantity').addEventListener('click', () => {
+                if (quantity > 1) {
+                    quantity--;
+                    quantitySpan.textContent = quantity;
+                }
+            });
+
+            document.getElementById('increaseQuantity').addEventListener('click', () => {
+                quantity++;
+                quantitySpan.textContent = quantity;
+            });
+
+            const confirmOrderButton = document.getElementById('confirmOrder');
+
+            confirmOrderButton.addEventListener('click', async (event) => {
                 event.preventDefault();
                 if (isLoggedIn) {
                     const order = {
                         productId: productId,
-                        quantity: 1 // You can change the quantity or make it dynamic as needed
+                        quantity: quantity
                     };
 
                     const response = await fetch('/api/orders', {
@@ -148,12 +180,10 @@
                     const data = await response.json();
                     if (response.ok) {
                         alert('Order placed successfully');
+                        quantityContainer.style.display = 'none';
                     } else {
                         alert(data.message);
                     }
-                } else {
-                    localStorage.setItem('lastPage', window.location.href);
-                    window.location.href = '/login';
                 }
             });
         })
