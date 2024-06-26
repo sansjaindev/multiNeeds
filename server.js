@@ -25,7 +25,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api', orderRoutes);
 
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname + '/public/html/index.html'));
+    res.sendFile(path.join(__dirname, '/public/html/index.html'));
 });
 
 app.get('/search', (req, res) => {
@@ -37,15 +37,19 @@ app.get('/product/:id', (req, res) => {
 })
 
 app.get('/login', (req, res) => {
-    res.sendFile(path.join(__dirname + '/public/html/login.html'));
+    res.sendFile(path.join(__dirname, '/public/html/login.html'));
 });
 
 app.get('/signup', (req, res) => {
-    res.sendFile(path.join(__dirname + '/public/html/signup.html'));
+    res.sendFile(path.join(__dirname, '/public/html/signup.html'));
 });
 
 app.get('/admin_dashboard', (req, res) => {
     res.sendFile(path.join(__dirname, '/public/html/admin_dashboard.html'));
+});
+
+app.get('/profile', (req, res) => {
+    res.sendFile(path.join(__dirname, '/public/html/profile.html'));
 });
 
 app.listen(PORT, () => {
