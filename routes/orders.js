@@ -16,8 +16,11 @@ router.post('/orders', auth, async (req, res) => {
 
         const order = new Order({
             userId: req.userId,
-            productId,
-            quantity
+            productId: productId,
+            productImg: product.imgString,
+            productName: product.name,
+            productCost: product.price,
+            quantity: quantity
         });
 
         product.stock -= quantity;
