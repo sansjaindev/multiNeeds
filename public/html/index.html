@@ -42,6 +42,10 @@
                             style="display: none;">Admin Dashboard</a>
                     </li>
                     <li class="nav-item">
+                        <a id="profileNav" class="nav-link active" aria-current="page" href="/profile"
+                            style="display: none;">Profile</a>
+                    </li>
+                    <li class="nav-item">
                         <a id="logoutNav" class="nav-link active" aria-current="page" href="#"
                             style="display: none;">Logout</a>
                     </li>
@@ -75,6 +79,7 @@
                         document.getElementById('loginNav').style.display = 'none';
                         document.getElementById('signupNav').style.display = 'none';
                         document.getElementById('logoutNav').style.display = 'block';
+                        document.getElementById('profileNav').style.display = 'block';
 
                         if (data.role === 'admin') {
                             document.getElementById('adminDashboardNav').style.display = 'block';
