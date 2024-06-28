@@ -45,8 +45,16 @@
         <div class="card">
             <div class="card-body">
                 <h3 class="card-title">Profile Information</h3>
-                <p class="card-text"><strong>Name:</strong> <span id="userName"></span></p>
-                <p class="card-text"><strong>Email:</strong> <span id="userEmail"></span></p>
+                <p class="card-text"><strong>Name:</strong> <span id="userName"></span>
+                <input type="text" id="editUserName" class="form-control d-none" value="">
+                    <button id="editNameBtn" class="btn btn-secondary btn-sm">Edit</button>
+                    <button id="cancelNameBtn" class="btn btn-secondary btn-sm d-none">Cancel</button>
+                    <button id="updateNameBtn" class="btn btn-primary btn-sm d-none">Update</button></p>
+                <p class="card-text"><strong>Email:</strong> <span id="userEmail"></span>
+                <input type="email" id="editUserEmail" class="form-control d-none" value="">
+                    <button id="editEmailBtn" class="btn btn-secondary btn-sm">Edit</button>
+                    <button id="cancelEmailBtn" class="btn btn-secondary btn-sm d-none">Cancel</button>
+                    <button id="updateEmailBtn" class="btn btn-primary btn-sm d-none">Update</button></p>
                 <h4 class="mt-4">Orders</h4>
 
                 <div class="table-responsive orders">
@@ -107,7 +115,9 @@
                 if (data.success) {
                     const userData = data.user;
                     document.getElementById('userName').textContent = userData.name;
+                    document.getElementById('editUserName').value = userData.name;
                     document.getElementById('userEmail').textContent = userData.username;
+                    document.getElementById('editUserEmail').value = userData.username;
 
 
 
@@ -195,6 +205,108 @@
                 localStorage.removeItem('token');
                 alert('Logged out Successfully.');
                 window.location.href = '/';
+            });
+
+            const editNameBtn = document.getElementById('editNameBtn');
+            const cancelNameBtn = document.getElementById('cancelNameBtn');
+            const updateNameBtn = document.getElementById('updateNameBtn');
+            const userNameSpan = document.getElementById('userName');
+            const editUserNameInput = document.getElementById('editUserName');
+
+            editNameBtn.addEventListener('click', () => {
+                userNameSpan.classList.add('d-none');
+                editUserNameInput.classList.remove('d-none');
+                editNameBtn.classList.add('d-none');
+                cancelNameBtn.classList.remove('d-none');
+                updateNameBtn.classList.remove('d-none');
+            });
+
+            cancelNameBtn.addEventListener('click', () => {
+                userNameSpan.classList.remove('d-none');
+                editUserNameInput.classList.add('d-none');
+                editNameBtn.classList.remove('d-none');
+                cancelNameBtn.classList.add('d-none');
+                updateNameBtn.classList.add('d-none');
+            });
+
+            updateNameBtn.addEventListener('click', async () => {
+                const updatedName = editUserNameInput.value;
+                try {
+                    const response = await fetch('/api/auth/updateProfile', {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({ name: updatedName })
+                    });
+
+                    const data = await response.json();
+                    if (data.success) {
+                        userNameSpan.textContent = updatedName;
+                        userNameSpan.classList.remove('d-none');
+                        editUserNameInput.classList.add('d-none');
+                        editNameBtn.classList.remove('d-none');
+                        cancelNameBtn.classList.add('d-none');
+                        updateNameBtn.classList.add('d-none');
+                        alert('Name updated successfully');
+                    } else {
+                        alert('Failed to update name: ' + data.message);
+                    }
+                } catch (error) {
+                    console.error('Error updating name:', error);
+                }
+            });
+
+            const editEmailBtn = document.getElementById('editEmailBtn');
+            const cancelEmailBtn = document.getElementById('cancelEmailBtn');
+            const updateEmailBtn = document.getElementById('updateEmailBtn');
+            const userEmailSpan = document.getElementById('userEmail');
+            const editUserEmailInput = document.getElementById('editUserEmail');
+
+            editEmailBtn.addEventListener('click', () => {
+                userEmailSpan.classList.add('d-none');
+                editUserEmailInput.classList.remove('d-none');
+                editEmailBtn.classList.add('d-none');
+                cancelEmailBtn.classList.remove('d-none');
+                updateEmailBtn.classList.remove('d-none');
+            });
+
+            cancelEmailBtn.addEventListener('click', () => {
+                userEmailSpan.classList.remove('d-none');
+                editUserEmailInput.classList.add('d-none');
+                editEmailBtn.classList.remove('d-none');
+                cancelEmailBtn.classList.add('d-none');
+                updateEmailBtn.classList.add('d-none');
+            });
+
+            updateEmailBtn.addEventListener('click', async () => {
+                const updatedEmail = editUserEmailInput.value;
+                try {
+                    const response = await fetch('/api/auth/updateProfile', {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({ username: updatedEmail })
+                    });
+
+                    const data = await response.json();
+                    if (data.success) {
+                        userEmailSpan.textContent = updatedEmail;
+                        userEmailSpan.classList.remove('d-none');
+                        editUserEmailInput.classList.add('d-none');
+                        editEmailBtn.classList.remove('d-none');
+                        cancelEmailBtn.classList.add('d-none');
+                        updateEmailBtn.classList.add('d-none');
+                        alert('Email updated successfully');
+                    } else {
+                        alert('Failed to update email: ' + data.message);
+                    }
+                } catch (error) {
+                    console.error('Error updating email:', error);
+                }
             });
         });
     </script>
