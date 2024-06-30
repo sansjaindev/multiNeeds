@@ -106,7 +106,6 @@ router.post('/product/:id/review', auth, async (req, res) => {
 });
 
 router.get('/product/:id/reviews', async (req, res) => {
-    console.log(req);
     try {
         const { id } = req.params;
         const reviews = await Review.find({ productId: id }).populate('user', 'name');

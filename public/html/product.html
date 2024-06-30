@@ -148,6 +148,10 @@
             const reviews = await reviewsResponse.json();
             const reviewsDiv = document.getElementById('reviewContainer');
             if (reviews.length > 0) {
+                const ratingResponse = await fetch(`/product/${productId}/average-rating`);
+                const ratingData = await ratingResponse.json();
+
+                reviewsDiv.innerHTML = ratingData.average + ' Stars';
                 reviews.forEach(review => {
                     console.log(review);
                     const div = document.createElement('div');
