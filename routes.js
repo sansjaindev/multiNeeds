@@ -4,6 +4,23 @@ const Product = require('./models/Product');
 const { auth, admin } = require('./middleware/auth');
 const Review = require('./models/review');
 
+const authMiddleware = (req, res, next) => {
+    const token = req.header('Authorization')?.replace('Bearer ', '');
+    if (!token) {
+        return res.status(401).json({ message: 'Authentication required' });
+    }
+
+    try {
+        const data = jwt.verify(token, 'SECRET_KEY');
+        req.userId = data.userId;
+        req.userRole = data.role;
+        next();
+    } catch {
+        res.status(401).json({ message: 'Invalid token' });
+    }
+};
+
+
 // Create a new product (Admin only)
 router.post('/products', auth, admin, async (req, res) => {
     try {
@@ -75,7 +92,6 @@ router.delete('/products/:id', auth, admin, async (req, res) => {
 });
 
 router.post('/product/:id/review', auth, async (req, res) => {
-    console.log(req);
     const userId = req.userId;
     const { id } = req.params;
     const { rating, description } = req.body;
@@ -89,8 +105,8 @@ router.post('/product/:id/review', auth, async (req, res) => {
     }
 });
 
-
 router.get('/product/:id/reviews', async (req, res) => {
+    console.log(req);
     try {
         const { id } = req.params;
         const reviews = await Review.find({ productId: id }).populate('user', 'name');
@@ -99,6 +115,24 @@ router.get('/product/:id/reviews', async (req, res) => {
         console.error("Error fetching reviews:", error);
         res.status(500).send("Error fetching reviews");
     }
-})
+});
+
+router.get('/product/:id/average-rating', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const reviews = await Review.find({ productId: id });
+        if (reviews.length === 0) {
+            return res.json({ average: 'No ratings yet' });
+        }
+        
+        const total = reviews.reduce((sum, review) => sum + review.rating, 0);
+        const average = total / reviews.length;
+
+        res.json({ average: average.toFixed(2) });
+    } catch (err) {
+        console.error("Error fetching average rating:", err);
+        res.status(500).send("Error fetching average rating");
+    }
+});
 
 module.exports = router;

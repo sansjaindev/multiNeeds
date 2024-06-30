@@ -141,12 +141,6 @@
                 document.getElementById('productPrice').textContent = 'Rs.' + product.price;
                 document.getElementById('productDescription').textContent = product.description;
                 document.title = `${product.name} - multiNeeds`;
-
-                if (product.rating === '') {
-                    document.getElementById('productRating').textContent = 'No rating yet. Be the first one to rate';
-                } else {
-                    document.getElementById('productRating').textContent = product.rating + ' stars rating';
-                }
             }).catch(error => console.error('Error fetching product data:', error));
 
             document.getElementById('reviewForm').action = `/product/${productId}/review`
@@ -155,10 +149,12 @@
             const reviewsDiv = document.getElementById('reviewContainer');
             if (reviews.length > 0) {
                 reviews.forEach(review => {
+                    console.log(review);
                     const div = document.createElement('div');
                     div.innerHTML = `
                             <p>Rating: ${review.rating}</p>
                             <p>${review.description}</p>
+                            <p>Reviewed by : ${review.user.name}</p>
                             
                         `;
                     reviewsDiv.appendChild(div);
