@@ -2,25 +2,25 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const Order = require('../models/order');
-const Product = require('../models/Product');
+const { auth, admin } = require('./../middleware/auth');
 
 const router = express.Router();
 
-const authMiddleware = (req, res, next) => {
-    const token = req.header('Authorization')?.replace('Bearer ', '');
-    if (!token) {
-        return res.status(401).json({ message: 'Authentication required' });
-    }
+// const authMiddleware = (req, res, next) => {
+//     const token = req.header('Authorization')?.replace('Bearer ', '');
+//     if (!token) {
+//         return res.status(401).json({ message: 'Authentication required' });
+//     }
 
-    try {
-        const data = jwt.verify(token, 'SECRET_KEY');
-        req.userId = data.userId;
-        req.userRole = data.role;
-        next();
-    } catch {
-        res.status(401).json({ message: 'Invalid token' });
-    }
-};
+//     try {
+//         const data = jwt.verify(token, 'SECRET_KEY');
+//         req.userId = data.userId;
+//         req.userRole = data.role;
+//         next();
+//     } catch {
+//         res.status(401).json({ message: 'Invalid token' });
+//     }
+// };
 
 
 router.post('/signup', async (req, res) => {
@@ -78,11 +78,11 @@ router.post('/admin-login', async (req, res) => {
     }
 })
 
-router.get('/isLoggedIn', authMiddleware, (req, res) => {
+router.get('/isLoggedIn', auth, (req, res) => {
     res.json({ loggedIn: true, role: req.userRole });
 });
 
-router.get('/profile', authMiddleware, async (req, res) => {
+router.get('/profile', auth, async (req, res) => {
     try {
         const userId = req.userId
         const user = await User.findById(userId).select('-password');
@@ -99,7 +99,7 @@ router.get('/profile', authMiddleware, async (req, res) => {
     }
 });
 
-router.put('/updateProfile', authMiddleware, async (req, res) => {
+router.put('/updateProfile', auth, async (req, res) => {
     const { name, username } = req.body;
     const userId = req.userId;
 
