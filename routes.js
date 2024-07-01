@@ -35,7 +35,23 @@ router.post('/products', auth, admin, async (req, res) => {
 // Get all products
 router.get('/products', async (req, res) => {
     try {
-        const products = await Product.find();
+        let sortOption;
+
+        if (req.query.sort) {
+            sortOption = req.query.sort;
+        }
+
+        let sort = {};
+
+        if (sortOption === 'price-asc') {
+            sort.price = 1;
+        }
+        
+        else if (sortOption === 'price-desc') {
+            sort.price = -1;
+        }
+        
+        const products = await Product.find().sort(sort);
         res.status(200).send(products);
     } catch (err) {
         res.status(400).send(err);

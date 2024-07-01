@@ -55,6 +55,14 @@
     </nav>
 
     <div id="products" style="margin: 0 10rem;">
+        <select id="sortOptions" onchange="loadProducts()">
+            <option value="">Sort by</option>
+            <option value="price-asc">Price: Low to High</option>
+            <option value="price-desc">Price: High to Low</option>
+            <option value="rating-desc">Rating: High to Low</option>
+            <option value="newest">Newest</option>
+        </select>
+        
         <h2>Products</h2>
         <div id="productList" class="row row-cols-1 row-cols-md-3 g-4 m-0"></div>
     </div>
@@ -135,7 +143,19 @@
         }
 
         async function loadProducts() {
-            const response = await fetch('/products');
+            const sortOption = document.getElementById('sortOptions').value;
+
+            let response;
+
+            if (sortOption) {
+                console.log(sortOption);
+                response = await fetch(`products?sort=${sortOption}`);
+            }
+
+            else {
+                response = await fetch('/products');
+            }
+
             const products = await response.json();
             displayProducts(products);
             return products;
