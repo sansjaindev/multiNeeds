@@ -4,21 +4,21 @@ const Product = require('./models/Product');
 const { auth, admin } = require('./middleware/auth');
 const Review = require('./models/review');
 
-const authMiddleware = (req, res, next) => {
-    const token = req.header('Authorization')?.replace('Bearer ', '');
-    if (!token) {
-        return res.status(401).json({ message: 'Authentication required' });
-    }
+// const authMiddleware = (req, res, next) => {
+//     const token = req.header('Authorization')?.replace('Bearer ', '');
+//     if (!token) {
+//         return res.status(401).json({ message: 'Authentication required' });
+//     }
 
-    try {
-        const data = jwt.verify(token, 'SECRET_KEY');
-        req.userId = data.userId;
-        req.userRole = data.role;
-        next();
-    } catch {
-        res.status(401).json({ message: 'Invalid token' });
-    }
-};
+//     try {
+//         const data = jwt.verify(token, 'SECRET_KEY');
+//         req.userId = data.userId;
+//         req.userRole = data.role;
+//         next();
+//     } catch {
+//         res.status(401).json({ message: 'Invalid token' });
+//     }
+// };
 
 
 // Create a new product (Admin only)
@@ -49,6 +49,14 @@ router.get('/products', async (req, res) => {
         
         else if (sortOption === 'price-desc') {
             sort.price = -1;
+        }
+        
+        else if (sortOption === 'rating-asc') {
+            sort.rating = 1;
+        }
+        
+        else if (sortOption === 'rating-desc') {
+            sort.rating = -1;
         }
         
         const products = await Product.find().sort(sort);
@@ -114,6 +122,12 @@ router.post('/product/:id/review', auth, async (req, res) => {
     try {
         const review = new Review({ productId: id, rating, description, user: userId });
         await review.save();
+
+        const product = await Product.findById(id);
+        if (product) {
+            await product.updateAverageRating();
+        }
+
         res.redirect(`/product/${id}`);
     } catch (error) {
         console.error("Error saving review:", error);
@@ -129,24 +143,6 @@ router.get('/product/:id/reviews', async (req, res) => {
     } catch (error) {
         console.error("Error fetching reviews:", error);
         res.status(500).send("Error fetching reviews");
-    }
-});
-
-router.get('/product/:id/average-rating', async (req, res) => {
-    try {
-        const { id } = req.params;
-        const reviews = await Review.find({ productId: id });
-        if (reviews.length === 0) {
-            return res.json({ average: 'No ratings yet' });
-        }
-        
-        const total = reviews.reduce((sum, review) => sum + review.rating, 0);
-        const average = total / reviews.length;
-
-        res.json({ average: average.toFixed(2) });
-    } catch (err) {
-        console.error("Error fetching average rating:", err);
-        res.status(500).send("Error fetching average rating");
     }
 });
 
