@@ -48,6 +48,7 @@
                         <th>S. No.</th>
                         <th>Product Image</th>
                         <th>Product Name</th>
+                        <th>Product Category</th>
                         <th>Product Price</th>
                         <th>Product Stock</th>
                         <th>Actions</th>
@@ -58,6 +59,7 @@
                         <td>0.</td>
                         <td><input type="file" id="productImage" placeholder="Upload Image"></td>
                         <td><input type="text" id="productName" placeholder="Product Name" required></td>
+                        <td><input type="text" id="productCategory" placeholder="Product Category" required></td>
                         <td><input type="number" id="productPrice" placeholder="Product Price" required></td>
                         <td><input type="number" id="productStock" placeholder="Product Stock" required></td>
                         <td><button type="button" id="addProductBtn">Add Product</button></td>
@@ -119,6 +121,7 @@
                         <td>0.</td>
                         <td><input type="file" id="productImage" placeholder="Upload Image"></td>
                         <td><input type="text" id="productName" placeholder="Product Name" required></td>
+                        <td><input type="text" id="productCategory" placeholder="Product Category" required></td>
                         <td><input type="number" id="productPrice" placeholder="Product Price" required></td>
                         <td><input type="number" id="productStock" placeholder="Product Stock" required></td>
                         <td><button type="button" id="addProductBtn">Add Product</button></td>
@@ -135,6 +138,7 @@
                             <img src="${product.imgString}" height="50px">
                         </td>
                         <td><input type="text" value="${product.name}" class="productName"></td>
+                        <td><input type="text" value="${product.category}" class="producCategory"></td>
                         <td><input type="number" value="${product.price}" class="productPrice"></td>
                         <td><input type="number" value="${product.stock}" class="productStock"></td>
                         <td>
@@ -174,10 +178,11 @@
             const addProductBtn = document.getElementById('addProductBtn');
             addProductBtn.addEventListener('click', async () => {
                 const name = document.getElementById('productName').value;
+                const category = document.getElementById('productCategory').value;
                 const price = document.getElementById('productPrice').value;
                 const stock = document.getElementById('productStock').value;
     
-                const productData = { name, price, stock };
+                const productData = { name, category, price, stock };
     
                 if (imageString) {
                     productData.imgString = imageString;
@@ -225,11 +230,12 @@
                         const id = event.target.dataset.id;
                         const tr = event.target.closest('tr');
                         const name = tr.querySelector('.productName').value;
+                        const category = tr.querySelector('.productCategory').value;
                         const price = tr.querySelector('.productPrice').value;
                         const stock = tr.querySelector('.productStock').value;
                         const imgInput = tr.querySelector('.productImageFromTable');
     
-                        const productData = { name, price, stock };
+                        const productData = { name, category, price, stock };
     
                         if (imgInput.dataset.imageString) {
                             productData.imgString = imgInput.dataset.imageString;
