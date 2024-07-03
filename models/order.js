@@ -5,6 +5,7 @@ const orderSchema = new mongoose.Schema({
     productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true },
     productImg: { type: String, requred: true },
     productName: { type: String, required: true },
+    productCategory: { type: String, required: true },
     productCost: { type: Number, required: true },
     quantity: { type: Number, required: true },
     status: { type: String, enum: ['Pending', 'Completed'], default: 'Pending' }
