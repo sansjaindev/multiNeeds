@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Order = require('../models/order');
-const Product = require('../models/Product');
+const Product = require('../models/product');
 const { auth } = require('../middleware/auth');
 
 // Create a new order
@@ -19,6 +19,7 @@ router.post('/orders', auth, async (req, res) => {
             productId: productId,
             productImg: product.imgString,
             productName: product.name,
+            productCategory: product.category,
             productCost: product.price,
             quantity: quantity
         });
