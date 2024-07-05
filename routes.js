@@ -82,7 +82,7 @@ router.get('/products/:id', async (req, res) => {
 router.get('/searchItems', async (req, res) => {
     const searchKeywords = req.query.q ? req.query.q.toLowerCase() : '';
     try {
-        const products = await Product.find({ name: { $regex: searchKeywords } });
+        const products = await Product.find({ name: { $regex: new RegExp(searchKeywords, "i")  } });
         res.status(200).send(products);
     } catch (err) {
         res.status(400).send(err);
