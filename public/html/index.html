@@ -34,9 +34,6 @@
                     <li class="nav-item">
                         <a id="signupNav" class="nav-link active" aria-current="page" href="/signup">Signup</a>
                     </li>
-                    <!-- <li class="nav-item">
-                        <a id="adminLoginNav" class="nav-link active" aria-current="page" href="/admin_login">Admin Login</a>
-                    </li> -->
                     <li class="nav-item">
                         <a id="adminDashboardNav" class="nav-link active" aria-current="page" href="/admin_dashboard"
                             style="display: none;">Admin Dashboard</a>
@@ -55,7 +52,7 @@
     </nav>
 
     <div id="products" style="margin: 0 10rem;">
-        <select id="sortOptions" onchange="loadProducts()">
+        <select id="sortOptions">
             <option value="">Sort by</option>
             <option value="price-asc">Price: Low to High</option>
             <option value="price-desc">Price: High to Low</option>
@@ -106,7 +103,7 @@
                 window.location.reload();
             });
 
-            const products = await loadProducts();
+            let products;
 
             // const searchForm = document.getElementById('search');
             // searchForm.addEventListener('submit', (event) => {
@@ -128,12 +125,18 @@
             const query = urlParams.get('q');
 
             if (query) {
-                await searchProducts(query);
+                products = await searchProducts(query);
                 document.getElementById('searchInput').value = query;
             } else {
-                await loadProducts();
+                products = await loadProducts();
             }
 
+            const sortOptions = document.getElementById('sortOptions');
+            sortOptions.addEventListener('change', () => {
+                const sortOption = sortOptions.value;
+                const sortedProducts = sortProducts(products, sortOption);
+                displayProducts(sortedProducts);
+            });
         });
 
         async function searchProducts(query) {
@@ -144,21 +147,31 @@
         }
 
         async function loadProducts() {
-            const sortOption = document.getElementById('sortOptions').value;
-
-            let response;
-
-            if (sortOption) {
-                response = await fetch(`products?sort=${sortOption}`);
-            }
-
-            else {
-                response = await fetch('/products');
-            }
-
+            const response = await fetch('/products');
             const products = await response.json();
             displayProducts(products);
             return products;
+        }
+
+        function sortProducts(products, sortOption) {
+            if (!sortOption) return products;
+
+            return products.slice().sort((a, b) => {
+                switch (sortOption) {
+                    case 'price-asc':
+                        return a.price - b.price;
+                    case 'price-desc':
+                        return b.price - a.price;
+                    case 'rating-asc':
+                        return a.rating - b.rating;
+                    case 'rating-desc':
+                        return b.rating - a.rating;
+                    case 'newest':
+                        return new Date(b.createdAt) - new Date(a.createdAt);
+                    default:
+                        return 0;
+                }
+            });
         }
 
         function displayProducts(products) {

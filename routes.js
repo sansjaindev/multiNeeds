@@ -35,31 +35,7 @@ router.post('/products', auth, admin, async (req, res) => {
 // Get all products
 router.get('/products', async (req, res) => {
     try {
-        let sortOption;
-
-        if (req.query.sort) {
-            sortOption = req.query.sort;
-        }
-
-        let sort = {};
-
-        if (sortOption === 'price-asc') {
-            sort.price = 1;
-        }
-        
-        else if (sortOption === 'price-desc') {
-            sort.price = -1;
-        }
-        
-        else if (sortOption === 'rating-asc') {
-            sort.rating = 1;
-        }
-        
-        else if (sortOption === 'rating-desc') {
-            sort.rating = -1;
-        }
-        
-        const products = await Product.find().sort(sort);
+        const products = await Product.find();
         res.status(200).send(products);
     } catch (err) {
         res.status(400).send(err);
@@ -81,6 +57,7 @@ router.get('/products/:id', async (req, res) => {
 
 router.get('/searchItems', async (req, res) => {
     const searchKeywords = req.query.q ? req.query.q.toLowerCase() : '';
+    
     try {
         const products = await Product.find({ name: { $regex: new RegExp(searchKeywords, "i")  } });
         res.status(200).send(products);
